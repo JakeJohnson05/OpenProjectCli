@@ -1,7 +1,7 @@
 const { existsSync, writeFileSync, createReadStream, readFile } = require('fs');
 const csv = require('csv-parser');
 const { join } = require('path');
-const { ReplaySubject } = require('rxjs');
+const { ReplaySubject, Observable } = require('rxjs');
 const { map, take } = require('rxjs/operators');
 const { green } = require('chalk');
 const table = require('text-table');
@@ -60,7 +60,7 @@ const startStream = (projects$, i) => {
 // Check the csv file for each focus level. If a csv file do not exist, create it
 for (let focus of [...Array(numFocusLevels).keys()]) if (!existsSync(`${csvFolder}${focus}.csv`)) writeFileSync(`${csvFolder}${focus}.csv`, 'name,path');
 
-/** All the projects observables in an Array */
+/** @type {Observable<ProjectOption[]>[]} All the projects observables in an Array */
 const allProjects = [...Array(numFocusLevels)].map(_ => createProjectRS());
 
 /** @type {ReplaySubject<string>} The path for the last opened project */

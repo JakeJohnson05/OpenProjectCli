@@ -5,10 +5,11 @@ const { join } = require('path');
 const { green } = require('chalk');
 const logSymbols = require('log-symbols');
 const table = require('text-table');
+// const { combineLatest } = require('rxjs');
+// const { map } = require('rxjs/operators');
+const oraSpinner = require('ora')('Finding Projects...');
 const { allProjects, ProjectOption, lastOpenedProjectPath$ } = require('../projects');
 const { getPositionText } = require('../constants');
-
-const oraSpinner = require('ora')('Finding Projects...');
 const projectOutputPath = join(__dirname, '../project-output-path.txt');
 
 /**
@@ -82,6 +83,10 @@ const startProcess = (focus = '0', lastOpenedProjectPath = undefined) => {
 	console.log(logSymbols.info, `Searching for projects with \`${getPositionText(focusInt)}\` focus - (${focusInt})`);
 	oraSpinner.start('Finding Projects...');
 
+	// setTimeout(() => combineLatest(allProjects).pipe(
+	// 	// map(projectsObservables => projectsObservables.flat())
+	// 	map(projectsObservables => projectsObservables.reduce((acc, curr) => [...acc, ...curr]))
+	// ).subscribe(projects => {
 	setTimeout(() => allProjects[focusInt].subscribe(projects => {
 		// If no projects, open the add project prompt or prompt to open a different focus
 		if (!projects.length) {
