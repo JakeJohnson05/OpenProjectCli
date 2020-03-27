@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const fs = require('fs');
+const { existsSync, lstatSync, appendFile } = require('fs');
 const { join, relative } = require('path');
 const { green } = require('chalk');
 const { allProjects } = require('../projects');
@@ -37,15 +37,15 @@ inquirer.prompt([
 			if (!input) return 'Must be a valid path';
 			if (!/^[^\s~/\\][^:\n].*$/i.test(input)) return 'Must not be an absolute path: Paths are relative to `~/`';
 			for (let invalidRegex of invalidValues) if (invalidRegex.test(input)) return 'Path is a reserved keyword';
-			return (fs.existsSync(join(homedir, input)) && fs.lstatSync(join(homedir, input)).isDirectory()) ? true : 'Not a valid directory';
+			return (existsSync(join(homedir, input)) && lstatSync(join(homedir, input)).isDirectory()) ? true : 'Not a valid directory';
 		}
 	}
-]).then(({ Focus, ProjName, ProjPath }) => fs.appendFile(
+]).then(({ Focus, ProjName, ProjPath }) => appendFile(
 	join(__dirname, `../project-data/${Focus}.csv`), `\n${ProjName},${ProjPath}`, err => {
 		if (err) {
 			console.error('Issue appending the new Project Data:', err);
 			process.exit(1);
 		}
-		fs.writeFile(join(__dirname, '../project-output-path.txt'), ProjPath, () => process.exit(0));
+		writeFile(join(__dirname, '../project-output-path.txt'), ProjPath, () => process.exit(0));
 	}
 ));

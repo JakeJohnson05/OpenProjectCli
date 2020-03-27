@@ -1,14 +1,14 @@
 {
   "name": "open-project",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Interactive choices to open a project",
-  "main": "index.js",
+  "main": "cli.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JakeJohnson05/OpenProjectCli.git"
   },
   "scripts": {
-    "start": "node ."
+    "start": "node cli.js"
   },
   "author": "Jake Johnson",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "chalk": "^3.0.0",
     "csv-parser": "^2.3.2",
     "inquirer": "^7.0.0",
+    "inquirer-exit-listener": "github:JakeJohnson05/InquirerExitListener",
     "log-symbols": "^3.0.0",
     "ora": "^4.0.3",
     "path": "^0.12.7",
