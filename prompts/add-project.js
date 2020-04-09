@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { existsSync, lstatSync, appendFile } = require('fs');
+const { existsSync, lstatSync, appendFile, writeFile } = require('fs');
 const { join, relative } = require('path');
 const { green } = require('chalk');
 const { allProjects } = require('../projects');
