@@ -1,3 +1,4 @@
+/** Full position text options for the first 10 index values [0, ..., 9] */
 const orderTexts = ['Primary', 'Secondary', 'Tertiary', 'Quaternary', 'Quinary', 'Senary', 'Septenary', 'Octonary', 'Nonary', 'Denary'];
 
 /**
@@ -27,8 +28,8 @@ module.exports = {
 		if (index < 0) return index.toString();
 		if (index < orderTexts.length) return orderTexts[index];
 		index++;
-		let lastDigits = [...index.toString().slice(-2)];
-		while (lastDigits.length < 2) lastDigits.unshift('0');
-		return index + numEnding.apply(null, lastDigits);
+		let last2Digits = [...index.toString().slice(-2)];
+		while (last2Digits.length < 2) last2Digits.unshift('0');
+		return index + numEnding.apply(null, last2Digits);
 	}
 }

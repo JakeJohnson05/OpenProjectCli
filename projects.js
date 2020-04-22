@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+'use strict'
+
 const { existsSync, writeFileSync, createReadStream, readFile } = require('fs');
 const csv = require('csv-parser');
 const { join } = require('path');
@@ -75,8 +79,4 @@ readFile(join(__dirname, 'project-output-path.txt'), (err, data) => {
 // Start the read stream for each project
 allProjects.forEach((projects$, i) => startStream(projects$, i));
 
-module.exports = {
-	ProjectOption,
-	allProjects,
-	lastOpenedProjectPath$
-}
+module.exports = { ProjectOption, allProjects, lastOpenedProjectPath$ }

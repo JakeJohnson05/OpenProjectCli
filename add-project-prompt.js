@@ -1,9 +1,13 @@
+#!/usr/bin/env node
+
+'use strict'
+
 const inquirer = require('inquirer');
 const { existsSync, lstatSync, appendFile, writeFile } = require('fs');
 const { join, relative } = require('path');
 const { green } = require('chalk');
-const { allProjects } = require('../projects');
-const { getPositionText } = require('../constants');
+const { allProjects } = require('./projects');
+const { getPositionText } = require('./constants');
 /** The home directory path */
 const homedir = require('os').homedir();
 
