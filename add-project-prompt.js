@@ -45,7 +45,7 @@ inquirer.prompt([
 		}
 	}
 ]).then(({ Focus, ProjName, ProjPath }) => appendFile(
-	join(__dirname, `../project-data/${Focus}.csv`), `\n${ProjName},${ProjPath}`, err => {
+	join(__dirname, `project-data/${Focus}.csv`), `\n${ProjName},${ProjPath}`, err => {
 		if (err) {
 			console.error('Issue appending the new Project Data:', err);
 			process.exit(1);

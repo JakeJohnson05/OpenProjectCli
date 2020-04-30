@@ -1,6 +1,6 @@
 {
   "name": "open-project",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Interactive choices to open a project",
   "main": "cli.js",
   "repository": {
