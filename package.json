@@ -8,10 +8,11 @@
     "url": "git+https://github.com/JakeJohnson05/OpenProjectCli.git"
   },
   "scripts": {
-    "start": "node cli.js"
+    "start": "node cli.js",
+    "test": "xo && ava && tsd"
   },
   "author": "Jake Johnson",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "chalk": "^3.0.0",
     "csv-parser": "^2.3.2",
@@ -23,5 +24,13 @@
     "rxjs": "^6.5.3",
     "text-table": "^0.2.0",
     "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "ava": "^3.8.1",
+    "tsd": "^0.11.0",
+    "xo": "^0.30.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.1.3"
   }
 }
