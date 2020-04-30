@@ -6,3 +6,5 @@ PortraitJamboree,source/PortraitJamboree/
 ImageCarousel,webDev/imageCarousel/
 StatusReports,source/StatusReports/
 NTL-cli,.bash_scripts/ntl/
+
+BrowserOpenRepo,.bash_scripts/browser-open-repository/

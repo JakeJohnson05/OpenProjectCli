@@ -43,7 +43,7 @@ const { getPositionText } = require('./constants');
 // }).catch(_ => process.exit(1));
 
 const projectOutputPath = join(__dirname, 'project-output-path.txt');
-const { argv } = yargs
+const { argv, exitProcess } = yargs
 	.scriptName('openProject')
 	.wrap(Math.min(100, yargs.terminalWidth()))
 	.usage('')
@@ -55,6 +55,13 @@ const { argv } = yargs
 	.usage('Aliases: op')
 	.help()
 	.alias('h', 'help')
+	.default('help', false)
+	.option('version', {
+		alias: ['v'],
+		type: 'boolean',
+		describe: 'Show current installed version',
+		default: false
+	})
 	// TODO: Insert message about adding bash script function/alias
 	.option('last', {
 		alias: ['l'],
@@ -68,7 +75,10 @@ const { argv } = yargs
 		describe: 'Start the prompt to add a new Project',
 		default: false
 	})
+	.exitProcess(false)
 	.epilog('Visit https://github.com/JakeJohnson05/OpenProjectCli for more info');
+
+if (argv.help || argv.version) exitProcess(true).exit(1);
 
 /**
  * The prompt for a user to select a project
