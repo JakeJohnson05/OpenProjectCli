@@ -9,7 +9,7 @@ const { ReplaySubject, Observable } = require('rxjs');
 const { map, take } = require('rxjs/operators');
 const { green } = require('chalk');
 const table = require('text-table');
-const { numFocusLevels } = require('./constants');
+const { numFocusLevels } = require('./common');
 
 /** The path to the csv data folder */
 const csvFolder = join(__dirname, 'project-data') + '\\';
@@ -79,4 +79,6 @@ readFile(join(__dirname, 'project-output-path.txt'), (err, data) => {
 // Start the read stream for each project
 allProjects.forEach((projects$, i) => startStream(projects$, i));
 
-module.exports = { ProjectOption, allProjects, lastOpenedProjectPath$ }
+module.exports.ProjectOption = ProjectOption;
+module.exports.allProjects = allProjects;
+module.exports.lastOpenedProjectPath$ = lastOpenedProjectPath$;

@@ -13,37 +13,11 @@ const table = require('text-table');
 const yargs = require('yargs/yargs')(process.argv.slice(2));
 // const { combineLatest, Subject } = require('rxjs');
 // const { map } = require('rxjs/operators');
-const { allProjects, ProjectOption, lastOpenedProjectPath$ } = require('./projects');
-const { getPositionText } = require('./constants');
-
-// const exitFunction = (code = 1) => {
-// 	console.log('\n\n\nExitFunction()\n');
-// 	console.log('currPrompt.ui:', currPrompt.ui);
-// 	console.log('inquirer:', inquirer);
-// 	console.log('inquirer.prompt.prompts:', inquirer.prompt.prompts);
-// 	currPrompt.ui.close();
-// 	console.log('-- Closed Prompt --');
-// 	console.log('currPrompt.ui:', currPrompt.ui);
-// 	process.exit(code);
-// }
-// process.openStdin().on('keypress', (_, key) => {
-// 	if (key) {
-// 		if ((key.name === 'c' && key.ctrl) || key.name === 'escape') exitFunction();
-// 	}
-// });
-
-// var promptsSubject = new Subject();
-// inquirer.prompt(promptsSubject.asObservable()).then(data => console.log('Test Obs:\n', data, '\n---- end ----\n'));
-// inquirer.prompt(promptsSubject.asObservable()).then(({ Project }) => {
-// if (!Project) throw Error('Project value does not exist');
-// else if (/^OPENLASTPATH$/.test(Project)) process.exit(0);
-// else if (/^CREATE NEW$/.test(Project)) return writeFile(projectOutputPath, '', _ => require('./add-project'));
-// else if (/^OPENFOCUS [\d]+$/.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
-// else writeFile(projectOutputPath, Project, _ => process.exit(0));
-// }).catch(_ => process.exit(1));
+const { writeDoNotEditFile, getPositionText } = require('./common');
+const { allProjects, lastOpenedProjectPath$ } = require('./projects');
 
 const projectOutputPath = join(__dirname, 'project-output-path.txt');
-const { argv, exitProcess } = yargs
+const { argv } = yargs
 	.scriptName('openProject')
 	.wrap(Math.min(100, yargs.terminalWidth()))
 	.usage('')
@@ -78,11 +52,35 @@ const { argv, exitProcess } = yargs
 	.exitProcess(false)
 	.epilog('Visit https://github.com/JakeJohnson05/OpenProjectCli for more info');
 
-if (argv.help || argv.version) exitProcess(true).exit(1);
+// const exitFunction = (code = 1) => {
+// 	console.log('\n\n\nExitFunction()\n');
+// 	console.log('currPrompt.ui:', currPrompt.ui);
+// 	console.log('inquirer:', inquirer);
+// 	console.log('inquirer.prompt.prompts:', inquirer.prompt.prompts);
+// 	currPrompt.ui.close();
+// 	console.log('-- Closed Prompt --');
+// 	console.log('currPrompt.ui:', currPrompt.ui);
+// 	process.exit(code);
+// }
+// process.openStdin().on('keypress', (_, key) => {
+// 	if (key) {
+// 		if ((key.name === 'c' && key.ctrl) || key.name === 'escape') exitFunction();
+// 	}
+// });
+
+// var promptsSubject = new Subject();
+// inquirer.prompt(promptsSubject.asObservable()).then(data => console.log('Test Obs:\n', data, '\n---- end ----\n'));
+// inquirer.prompt(promptsSubject.asObservable()).then(({ Project }) => {
+// if (!Project) throw Error('Project value does not exist');
+// else if (/^OPENLASTPATH$/.test(Project)) process.exit(0);
+// else if (/^CREATE NEW$/.test(Project)) return writeFile(projectOutputPath, '', _ => require('./add-project'));
+// else if (/^OPENFOCUS [\d]+$/.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
+// else writeFile(projectOutputPath, Project, _ => process.exit(0));
+// }).catch(_ => process.exit(1));
 
 /**
  * The prompt for a user to select a project
- * @param {ProjectOption[]}	projects
+ * @param {import('./projects').ProjectOption[]}	projects
  * @param {string}					[lastOpenedProjectPath]
  * @param {string}					[focus]
  * @param {string}					[message]
@@ -140,10 +138,13 @@ const selectProjectPrompt = (projects, lastOpenedProjectPath = undefined, focus 
 	currPrompt */.then(({ Project }) => {
 		if (!Project) throw Error('Project value does not exist');
 		else if (/^OPENLASTPATH$/.test(Project)) process.exit(0);
-		else if (/^CREATE NEW$/.test(Project)) return writeFile(projectOutputPath, '', _ => require('../add-project-prompt'));
+		else if (/^CREATE NEW$/.test(Project)) return writeDoNotEditFile('true', require, './add-project-prompt');
 		else if (/^OPENFOCUS [\d]+$/.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
 		else writeFile(projectOutputPath, Project, _ => process.exit(0));
-	}).catch(_ => process.exit(1));
+	}).catch(err => {
+		err && console.error(err);
+		process.exit(1);
+	});
 
 	// return currPrompt;
 }
@@ -179,7 +180,10 @@ const startProcess = (focus = '0', lastOpenedProjectPath = undefined) => {
 	}), 100);
 }
 
-if (argv.new) require('./add-project-prompt');
+// Prevent bash from opening `project-output-path.txt` and exit script
+if (argv.help || argv.version) writeDoNotEditFile();
+// Start the prompt to add a new project
+else if (argv.new) require('./add-project-prompt');
 else lastOpenedProjectPath$.subscribe(path => {
 	if (argv.last) {
 		path && process.exit(0);

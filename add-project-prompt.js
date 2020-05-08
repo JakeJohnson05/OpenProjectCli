@@ -6,13 +6,10 @@ const inquirer = require('inquirer');
 const { existsSync, lstatSync, appendFile, writeFile } = require('fs');
 const { join, relative } = require('path');
 const { green } = require('chalk');
+const { getPositionText, writeDoNotEditFile, invalidValues } = require('./common');
 const { allProjects } = require('./projects');
-const { getPositionText } = require('./constants');
 /** The home directory path */
 const homedir = require('os').homedir();
-
-/** Matches to input that are reserved keywords */
-const invalidValues = [/^CREATE NEW$/, /^OPENFOCUS [\d]+$/, /^OPENLASTPATH$/];
 
 inquirer.prompt([
 	{
@@ -50,6 +47,9 @@ inquirer.prompt([
 			console.error('Issue appending the new Project Data:', err);
 			process.exit(1);
 		}
-		writeFile(join(__dirname, '../project-output-path.txt'), ProjPath, () => process.exit(0));
+		writeDoNotEditFile('true', writeFile, join(__dirname, './project-output-path.txt'), ProjPath, () => process.exit(0));
 	}
-));
+)).catch(err => {
+	err && console.error(err);
+	process.exit(1);
+});

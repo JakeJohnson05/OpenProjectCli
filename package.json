@@ -1,6 +1,6 @@
 {
   "name": "open-project",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Interactive choices to open a project",
   "main": "cli.js",
   "repository": {
@@ -9,7 +9,8 @@
   },
   "scripts": {
     "start": "node cli.js",
-    "test": "xo && ava && tsd"
+    "test": "xo && ava && tsd",
+    "xoFix": "xo --fix"
   },
   "author": "Jake Johnson",
   "license": "MIT",

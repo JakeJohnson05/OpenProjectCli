@@ -1,0 +1,4 @@
+name,path
+Personal Website,source/website/
+Work,projects/work/website/
+Note,all CSV files in this directory should be named {index}.csv (eg. '0.csv' '8.csv')

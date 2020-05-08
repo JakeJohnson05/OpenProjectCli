@@ -1,3 +1,11 @@
+# personal data
+/project-data/*
+/project-output-path.txt
+/do-not-open-output-path.txt
+
+# examples
+!/project-data/example.csv
+
 # compiled output
 /dist
 /tmp
@@ -41,4 +49,3 @@ testem.log
 .DS_Store
 Thumbs.db
 /.env
-/project-output-path.txt
