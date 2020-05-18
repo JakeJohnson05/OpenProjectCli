@@ -2,7 +2,6 @@
 'use strict'
 
 require('inquirer-exit-listener');
-/** Loading animation when finding the projects */
 const oraSpinner = require('ora')('Finding Projects...');
 const { writeFile } = require('fs');
 const { join } = require('path');
@@ -11,8 +10,6 @@ const { green, bold } = require('chalk');
 const logSymbols = require('log-symbols');
 const table = require('text-table');
 const yargs = require('yargs/yargs')(process.argv.slice(2));
-// const { combineLatest, Subject } = require('rxjs');
-// const { map } = require('rxjs/operators');
 const { writeDoNotEditFile, getPositionText } = require('./common');
 const { allProjects, lastOpenedProjectPath$ } = require('./projects');
 
@@ -52,32 +49,6 @@ const { argv } = yargs
 	.exitProcess(false)
 	.epilog('Visit https://github.com/JakeJohnson05/OpenProjectCli for more info');
 
-// const exitFunction = (code = 1) => {
-// 	console.log('\n\n\nExitFunction()\n');
-// 	console.log('currPrompt.ui:', currPrompt.ui);
-// 	console.log('inquirer:', inquirer);
-// 	console.log('inquirer.prompt.prompts:', inquirer.prompt.prompts);
-// 	currPrompt.ui.close();
-// 	console.log('-- Closed Prompt --');
-// 	console.log('currPrompt.ui:', currPrompt.ui);
-// 	process.exit(code);
-// }
-// process.openStdin().on('keypress', (_, key) => {
-// 	if (key) {
-// 		if ((key.name === 'c' && key.ctrl) || key.name === 'escape') exitFunction();
-// 	}
-// });
-
-// var promptsSubject = new Subject();
-// inquirer.prompt(promptsSubject.asObservable()).then(data => console.log('Test Obs:\n', data, '\n---- end ----\n'));
-// inquirer.prompt(promptsSubject.asObservable()).then(({ Project }) => {
-// if (!Project) throw Error('Project value does not exist');
-// else if (/^OPENLASTPATH$/.test(Project)) process.exit(0);
-// else if (/^CREATE NEW$/.test(Project)) return writeFile(projectOutputPath, '', _ => require('./add-project'));
-// else if (/^OPENFOCUS [\d]+$/.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
-// else writeFile(projectOutputPath, Project, _ => process.exit(0));
-// }).catch(_ => process.exit(1));
-
 /**
  * The prompt for a user to select a project
  * @param {import('./projects').ProjectOption[]}	projects
@@ -96,57 +67,36 @@ const selectProjectPrompt = (projects, lastOpenedProjectPath = undefined, focus 
 		selectChoices.values.push(i)
 		selectChoices.names.push(['', green(i), getPositionText(i)]);
 	}
-	if (selectChoices.names[0]) choices.push(new inquirer.Separator('Search'));
-
-	table(selectChoices.names, {
-		align: ['l', 'r', 'l']
-	}).split('\n').forEach((name, i) => choices.push({
-		name,
-		value: `OPENFOCUS ${selectChoices.values[i]}`
-	}))
+	if (selectChoices.names[0]) {
+		choices.push(new inquirer.Separator('Search'));
+		table(selectChoices.names, {
+			align: ['l', 'r', 'l']
+		}).split('\n').forEach((name, i) => choices.push({
+			name,
+			value: `OPENFOCUS ${selectChoices.values[i]}`
+		}));
+	}
 
 	choices.push({ name: 'Add New Project', value: 'CREATE NEW' });
 	lastOpenedProjectPath && choices.push({ name: 'Open Last\t' + lastOpenedProjectPath, value: 'OPENLASTPATH' });
 	choices.push(new inquirer.Separator());
 
-	// promptsSubject.next({
-	// 	type: 'list',
-	// 	name: 'Project',
-	// 	message,
-	// 	choices,
-	// 	pageSize: 10
-	// });
-	// promptsSubject.complete();
-	// Object.assign(inquirer.prompts, currPrompt);
-	// currPrompt.then(({ Project }) => {
-	// 	if (!Project) throw Error('Project value does not exist');
-	// 	else if (/^OPENLASTPATH$/.test(Project)) process.exit(0);
-	// 	else if (/^CREATE NEW$/.test(Project)) return writeFile(projectOutputPath, '', _ => require('./add-project'));
-	// 	else if (/^OPENFOCUS [\d]+$/.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
-	// 	else writeFile(projectOutputPath, Project, _ => process.exit(0));
-	// }).catch(_ => process.exit(1));
-	// return currPrompt;
-
-	/* currPrompt =  */inquirer.prompt([{
+	inquirer.prompt([{
 		type: 'list',
 		name: 'Project',
 		message,
 		choices,
 		pageSize: 10
-	}])/* ;
-	Object.assign(inquirer.prompts, currPrompt);
-	currPrompt */.then(({ Project }) => {
+	}]).then(({ Project }) => {
 		if (!Project) throw Error('Project value does not exist');
 		else if (/^OPENLASTPATH$/.test(Project)) process.exit(0);
 		else if (/^CREATE NEW$/.test(Project)) return writeDoNotEditFile('true', require, './add-project-prompt');
-		else if (/^OPENFOCUS [\d]+$/.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
+		else if (/^OPENFOCUS /.test(Project)) return startProcess(Project.slice(10), lastOpenedProjectPath);
 		else writeFile(projectOutputPath, Project, _ => process.exit(0));
 	}).catch(err => {
 		err && console.error(err);
 		process.exit(1);
 	});
-
-	// return currPrompt;
 }
 
 /**
@@ -184,10 +134,14 @@ const startProcess = (focus = '0', lastOpenedProjectPath = undefined) => {
 if (argv.help || argv.version) writeDoNotEditFile();
 // Start the prompt to add a new project
 else if (argv.new) require('./add-project-prompt');
+// Else open the projects
 else lastOpenedProjectPath$.subscribe(path => {
+	// Check for the --last flag
 	if (argv.last) {
+		// If the last opened path exists - terminate the process with status 0 so the path is opened
 		path && process.exit(0);
 		oraSpinner.warn('Last opened project path not found');
 	}
+	// Finally if nothing above - start the selection process
 	startProcess('0', path)
 });
