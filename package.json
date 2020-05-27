@@ -1,7 +1,7 @@
 {
   "name": "open-project",
-  "version": "3.0.3",
-  "description": "Interactive choices to open a project",
+  "version": "3.0.4",
+  "description": "Interactive choices to navigate to a project directory on your local machine",
   "main": "cli.js",
   "repository": {
     "type": "git",
@@ -9,11 +9,15 @@
   },
   "scripts": {
     "start": "node cli.js",
-    "test": "xo && ava && tsd",
+    "test": "xo && ava",
     "xoFix": "xo --fix"
   },
   "author": "Jake Johnson",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JakeJohnson05/OpenProjectCli/issues"
+  },
+  "homepage": "https://github.com/JakeJohnson05/OpenProjectCli#readme",
   "dependencies": {
     "chalk": "^3.0.0",
     "csv-parser": "^2.3.2",
@@ -28,7 +32,6 @@
   },
   "devDependencies": {
     "ava": "^3.8.1",
-    "tsd": "^0.11.0",
     "xo": "^0.30.0"
   },
   "optionalDependencies": {
