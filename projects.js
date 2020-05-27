@@ -87,6 +87,6 @@ readFile(join(__dirname, 'project-output-path.txt'), (err, data) => {
 // Start the read stream for each project
 allProjects.forEach((projects$, i) => startStream(projects$, i));
 
-module.exports.ProjectOption = ProjectOption;
-module.exports.allProjects = allProjects;
 module.exports.lastOpenedProjectPath$ = lastOpenedProjectPath$;
+module.exports.allProjects = allProjects;
+module.exports.ProjectOption = ProjectOption;
