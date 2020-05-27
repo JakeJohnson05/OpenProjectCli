@@ -44,19 +44,24 @@ class ProjectOption {
  * @param {ProjectOption[]}	projects
  * @return {ProjectOption[]}
  */
-const mapToColoredTableProjectOptions = projects => !(projects.length && Array.isArray(projects)) ? []
-	: table(projects.map(({ valueForTable }) => valueForTable)).split('\n').map((name, i) => new ProjectOption(name, projects[i].value));
+const mapToColoredTableProjectOptions = projects => !(Array.isArray(projects) && projects.length) ? [] : table(
+	projects.map(({ valueForTable }) => valueForTable)
+).split('\n').map((name, i) => new ProjectOption(name, projects[i].value));
 
 /**
  * Easily create the projects replay subjects
  * @return {Observable<ProjectOption[]>}
  */
-const createProjectRS = () => new ReplaySubject(1).pipe(take(1), map(mapToColoredTableProjectOptions));
+const createProjectRS = () => new ReplaySubject(1).pipe(
+	take(1),
+	map(mapToColoredTableProjectOptions)
+);
 
 /** Creates the read stream for a project csv output */
 const startStream = (projects$, i) => {
 	const csvOutput = [];
-	createReadStream(`${csvFolder}${i}.csv`).pipe(csv())
+	createReadStream(`${csvFolder}${i}.csv`)
+		.pipe(csv())
 		.on('data', ({ name, path }) => name && path && csvOutput.push(new ProjectOption(name, path)))
 		.on('end', () => projects$.next(csvOutput));
 }
@@ -68,7 +73,10 @@ for (let focus of [...Array(numFocusLevels).keys()]) if (!existsSync(`${csvFolde
 const allProjects = [...Array(numFocusLevels)].map(_ => createProjectRS());
 
 /** @type {ReplaySubject<string>} The path for the last opened project */
-const lastOpenedProjectPath$ = new ReplaySubject(1).pipe(take(1), map(path => !path ? undefined : green('~/' + path)));
+const lastOpenedProjectPath$ = new ReplaySubject(1).pipe(
+	take(1),
+	map(path => !path ? undefined : green('~/' + path))
+);
 
 // Load the contents of the last opened path (if exists);
 readFile(join(__dirname, 'project-output-path.txt'), (err, data) => {
