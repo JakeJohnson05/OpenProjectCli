@@ -1,7 +1,19 @@
 #!/usr/bin/env node
 'use strict'
 
-require('inquirer-exit-listener');
+// require('inquirer-exit-listener');
+// const exitFunction = (code = 1) => {
+// 	console.log('');
+// 	process.exit(code);
+// }
+
+// process.openStdin().on('keypress', function (_, key) {
+// 	if (key) {
+// 		if (key.name === 'c' && key.ctrl) exitFunction();
+// 		else if (key.name === 'escape') exitFunction();
+// 	}
+// });
+
 const oraSpinner = require('ora')('Finding Projects...');
 const { writeFile } = require('fs');
 const { join } = require('path');
